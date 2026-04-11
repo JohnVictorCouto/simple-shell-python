@@ -557,6 +557,16 @@ def _exec_external(tokens: list[str], redirs: dict, background: bool) -> int:
                 fd = os.open("/dev/null", os.O_RDONLY)
                 os.dup2(fd, sys.stdin.fileno())
                 os.close(fd)
+            # Redireciona stdout/stderr para /dev/null se não houver redirecionamento explícito.
+            # Isso evita que o processo em background mantenha o pipe do shell aberto.
+            if "stdout" not in redirs:
+                fd = os.open("/dev/null", os.O_WRONLY)
+                os.dup2(fd, sys.stdout.fileno())
+                os.close(fd)
+            if "stderr" not in redirs:
+                fd = os.open("/dev/null", os.O_WRONLY)
+                os.dup2(fd, sys.stderr.fileno())
+                os.close(fd)
 
         # Aplica redirecionamentos de I/O usando dup2()
         try:
@@ -702,18 +712,23 @@ def _exec_pipeline(segments: list[list[str]], background: bool) -> int:
             # Se for builtin, executa e sai
             if tokens[0] in BUILTINS:
                 code = _exec_builtin(tokens[0], tokens[1:], redirs)
+                sys.stdout.flush()
+                sys.stderr.flush()
                 os._exit(code)
 
             try:
                 os.execvp(tokens[0], tokens)
             except FileNotFoundError:
                 print(f"shell: {tokens[0]}: comando não encontrado", file=sys.stderr)
+                sys.stdout.flush(); sys.stderr.flush()
                 os._exit(127)
             except PermissionError:
                 print(f"shell: {tokens[0]}: permissão negada", file=sys.stderr)
+                sys.stdout.flush(); sys.stderr.flush()
                 os._exit(126)
             except Exception as e:
                 print(f"shell: erro ao executar '{tokens[0]}': {e}", file=sys.stderr)
+                sys.stdout.flush(); sys.stderr.flush()
                 os._exit(1)
 
         else:
