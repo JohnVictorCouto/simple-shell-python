@@ -3,7 +3,7 @@ ECM225 - Sistemas Operacionais
 Projeto: Interpretador de Comandos em Python 
 
 Integrantes:
-  - João Victor Pereira Couto  24.00115-5
+  - João Victor Pereira Couto
 
 Descrição:
   Shell que simula o comportamento de um interpretador de comandos
