@@ -1,12 +1,12 @@
 """
 ECM225 - Sistemas Operacionais
-Projeto: Interpretador de Comandos em Python (Versão Avançada)
+Projeto: Interpretador de Comandos em Python 
 
 Integrantes:
   - João Victor Pereira Couto  24.00115-5
 
 Descrição:
-  Shell avançado que simula o comportamento de um interpretador de comandos
+  Shell que simula o comportamento de um interpretador de comandos
   Linux. Implementa recursos próximos ao bash, utilizando chamadas de sistema
   do módulo `os` para gerenciamento de processos (fork, execvp, wait, pipe,
   dup2, etc.).
